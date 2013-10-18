@@ -4,7 +4,7 @@ module.exports = function(){
             "code": 200,
             "method": req.method,
             "url": req.protocol + "://" + req.get('host') + req.url,
-            "message": success
+            "message": success,
             "timestamp": new Date(),
         };
         return res.status(json.code).json(json);

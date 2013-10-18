@@ -10,14 +10,10 @@ var express = require('express')
 var app = express();
 
 var shopify = new Shopify(config.shopify);
-
 var sixworks = new Sixworks(config.sixworks);
+var mongolian = new Mongolian(config.mongodb);
 
-var mongolian = new Mongolian();
-var _db = mongolian.db("shopify-sixworks");
-var db = {
-    "orders": _db.collection("orders")
-}
+var db = {"orders": mongolian.collection("orders")};
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.logger('dev'));

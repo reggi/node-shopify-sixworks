@@ -82,7 +82,7 @@ module.exports = function(config, db, shopify, sixworks){
                 "code": 200,
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
-                "message": (typeof err == "object") ? err.message : err
+                "message": (typeof err == "object") ? err.message : err,
                 "timestamp": new Date(),
             };
             db.orders.update({"identifier": req.unique}, {"$push":{"logs": json}}, function(err){

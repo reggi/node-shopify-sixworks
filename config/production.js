@@ -1,6 +1,7 @@
 module.exports = {
     "enabled": false,
     "order_email_lock" false,
+    "mongodb": process.env.MONGOHQ_URL,
     "domain": "sr.getsimpleapps.com",
     "shopify": {
         "apikey": process.env.SHOPIFY_API_KEY,
