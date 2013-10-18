@@ -1,0 +1,18 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.3.0",
+    "jade": "*",
+    "dotty": "0.0.2",
+    "config": "~0.4.30",
+    "mongolian": "~0.1.18",
+    "underscore": "~1.5.2",
+    "moment": "~2.3.1",
+    "request": "~2.27.0"
+  }
+}

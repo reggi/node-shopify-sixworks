@@ -1,0 +1,128 @@
+var _ = require("underscore");
+
+var countries = [
+    {
+        "name":"Andorra",
+        "code":"AD"
+    },
+    {
+        "name":"Austria",
+        "code":"AT"
+    },
+    {
+        "name":"Belgium",
+        "code":"BE"
+    },
+    {
+        "name":"Bulgaria",
+        "code":"BG"
+    },
+    {
+        "name":"Croatia",
+        "code":"HR"
+    },
+    {
+        "name":"Czech Republic",
+        "code":"CZ"
+    },
+    {
+        "name":"Denmark",
+        "code":"DK"
+    },
+    {
+        "name":"Finland",
+        "code":"FI"
+    },
+    {
+        "name":"France",
+        "code":"FR"
+    },
+    {
+        "name":"Germany",
+        "code":"DE"
+    },
+    {
+        "name":"Gibraltar",
+        "code":"GI"
+    },
+    {
+        "name":"Greece",
+        "code":"GR"
+    },
+    {
+        "name":"Greenland",
+        "code":"GL"
+    },
+    {
+        "name":"Hungary",
+        "code":"HU"
+    },
+    {
+        "name":"Iceland",
+        "code":"IS"
+    },
+    {
+        "name":"Ireland",
+        "code":"IE"
+    },
+    {
+        "name":"Italy",
+        "code":"IT"
+    },
+    {
+        "name":"Luxembourg",
+        "code":"LU"
+    },
+    {
+        "name":"Monaco",
+        "code":"MC"
+    },
+    {
+        "name":"Netherlands",
+        "code":"NL"
+    },
+    {
+        "name":"Poland",
+        "code":"PL"
+    },
+    {
+        "name":"Portugal",
+        "code":"PT"
+    },
+    {
+        "name":"Romania",
+        "code":"RO"
+    },
+    {
+        "name":"Slovakia",
+        "code":"SK"
+    },
+    {
+        "name":"Spain",
+        "code":"ES"
+    },
+    {
+        "name":"Sweden",
+        "code":"SE"
+    },
+    {
+        "name":"Ukraine",
+        "code":"UA"
+    },
+    {
+        "name":"United Kingdom",
+        "code":"GB"
+    }
+];
+
+var data = {
+    "countries":countries,
+    "codes":_.map(countries,function(country){
+        return country.code;
+    }),
+    "names":_.map(countries,function(country){
+        return country.name;
+    })
+};
+
+module.exports = data;
