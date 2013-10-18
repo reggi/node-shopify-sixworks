@@ -1,10 +1,10 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , config = require("config"),
-  , Shopify = require("sapi"),
-  , Mongolian = require("mongolian"),
-  , Sixworks = require("sixworks"),
+  , config = require("config")
+  , Shopify = require("shopify-api")
+  , Mongolian = require("mongolian")
+  , Sixworks = require("sixworks")
   , endpoints = require("./endpoints");
   
 var app = express();
