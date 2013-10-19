@@ -14,5 +14,9 @@
     "underscore": "~1.5.2",
     "moment": "~2.3.1",
     "request": "~2.27.0"
+  },
+  "devDependencies": {
+    "optimist": "~0.6.0",
+    "require": "~0.5.0"
   }
 }

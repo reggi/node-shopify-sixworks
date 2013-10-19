@@ -8,7 +8,7 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            if(req.method !== "post") return next(new Error("http method needs to be POST"));
+            if(req.method !== "POST") return next(new Error("http method needs to be POST"));
             return next();
         },
         function(req, res, next){

@@ -12,7 +12,6 @@ var app = express();
 var shopify = new Shopify(config.shopify);
 var sixworks = new Sixworks(config.sixworks);
 var mongolian = new Mongolian(config.mongodb);
-
 var db = {"orders": mongolian.collection("orders")};
 
 app.set('port', process.env.PORT || 3000);
