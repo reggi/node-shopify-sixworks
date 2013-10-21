@@ -17,7 +17,7 @@ shopify.request({
             "format": "json"
         }
     }
-}, function(err, data) {
+}, function(err, response, body, options) {
     console.log(err);
-    console.log(data);
+    console.log(body);
 });

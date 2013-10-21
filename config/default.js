@@ -1,7 +1,8 @@
 module.exports = {
     "enabled": true,
     "order_email_lock": process.env.ORDER_EMAIL_LOCK,
-    "mongodb": "mongo://localhost:27017/shopify-sixworks",
+    //"mongodb": "mongo://localhost:27017/shopify-sixworks",
+    "mongodb": process.env.MONGOHQ_URL,
     "domain": "localhost",
     "shopify": {
         "apikey": process.env.SHOPIFY_DEV_API_KEY,
