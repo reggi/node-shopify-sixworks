@@ -1,17 +1,16 @@
-var optimist = require("optimist");
 var request = require("request");
 var config = require("config");
 var Shopify = require("shopify-api");
-var order = require("./order.json");
+var order = require("./order.json").order;
 var shopify = Shopify(config.shopify);
 //var url = process.env.SIXWORKS_WEBHOOK_URL;
 var url = "http://localhost:3000";
 var path = "/order_created";
 
-var options = {
+request({
     "url": url + path,
     "method": "POST",
-    "body": JSON.stringify(order),
+    "json": order,
     "headers": {
         "content-type": "application/json",
         "x-shopify-topic": "orders/create",
@@ -23,11 +22,6 @@ var options = {
         "user-agent": "Ruby",
         "host": url,
     },
-};
-
-request({
-    "url": url + path,
-    "method": "POST",
 }, function(err, response, body){
     //console.log(response);
     //console.log(err);

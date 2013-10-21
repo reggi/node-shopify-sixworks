@@ -11,6 +11,7 @@ module.exports = {
     },
     "sixworks": {
         "url":process.env.SIXWORKS_URL,
-        "key":process.env.SIXWORKS_KEY
+        "key":process.env.SIXWORKS_KEY,
+        "webhook_domain": process.env.SIXWORKS_WEBHOOK_URL
     }
 }

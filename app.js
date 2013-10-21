@@ -5,7 +5,7 @@ var express = require('express')
   , Shopify = require("shopify-api")
   , Mongolian = require("mongolian")
   , Sixworks = require("sixworks")
-  , endpoints = require("./endpoints");
+  , middleware = require("./middleware");
   
 var app = express();
 
@@ -21,8 +21,11 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.errorHandler());
 
+app.param("hash", middleware.hash_param(db));
+
 app.all("/", function(req, res){res.send("shopify-sixworks");});
-app.all('/order_created', endpoints.order_created.middleware(config, db, shopify, sixworks), endpoints.order_created.route());
+app.all('/order_created', middleware.order_created(config, db, shopify, sixworks));
+app.all('/order_fulfilled/:hash', middleware.order_fulfilled(config, db, shopify, sixworks));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
