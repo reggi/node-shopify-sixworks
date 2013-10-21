@@ -4,7 +4,8 @@ var config = require("config");
 var Shopify = require("shopify-api");
 var order = require("./order.json");
 var shopify = Shopify(config.shopify);
-var url = process.env.SIXWORKS_WEBHOOK_URL;
+//var url = process.env.SIXWORKS_WEBHOOK_URL;
+var url = "http://localhost:3000";
 var path = "/order_created";
 
 var options = {
