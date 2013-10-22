@@ -83,8 +83,7 @@ module.exports = function(config, db, shopify, sixworks){
         function(req, res, next){
             var set = {
                 "$set":{
-                    "sent_to_sixworks": true,
-                    "sixworks": req.sixworks
+                    "sent_to_sixworks": req.sixworks,
                 }
             };
             db.orders.update({"identifier": req.unique}, set, function(err){

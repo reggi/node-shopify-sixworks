@@ -1,7 +1,8 @@
 var request = require("request");
 var config = require("config");
 var Shopify = require("shopify-api");
-var order = require("./order.json").order;
+var rand = Math.floor((Math.random()*100000)+1);
+var order = require("./order.js")(rand).order;
 var shopify = Shopify(config.shopify);
 //var url = process.env.SIXWORKS_WEBHOOK_URL;
 var url = "http://localhost:3000";
@@ -23,7 +24,6 @@ request({
         "host": url,
     },
 }, function(err, response, body){
-    //console.log(response);
-    //console.log(err);
+    if(err) throw err;
     console.log(body);
 });

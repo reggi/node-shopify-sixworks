@@ -5,6 +5,12 @@ module.exports = function(config, db, shopify, sixworks){
     return [
         function(req, res, next){
             if(req.method !== "POST") return next(new Error("http method needs to be POST"));
+            if(!dotty.exists(req, "body.client_ref")) return next(new Error("no client_ref"));
+            if(!dotty.exists(req, "body.date_despatched")) return next(new Error("no date_despatched"));
+            if(!dotty.exists(req, "body.client_area_link")) return next(new Error("no client_area_link"));
+            if(!dotty.exists(req, "body.postage_method")) return next(new Error("no postage_method"));
+            if(!dotty.exists(req, "body.boxed_weight")) return next(new Error("no boxed_weight"));
+            if(!dotty.exists(req, "body.postage_cost")) return next(new Error("no postage_cost"));
             return next();
         },
         function(req, res, next){
@@ -19,11 +25,18 @@ module.exports = function(config, db, shopify, sixworks){
                 }
             },function(err, response, body, options){
                 if(err) return next(err);
+                req.shopify_body = body;
                 return next();
             });
         }, 
         function(req, res, next){
-            db.orders.update({"_id":req.doc._id}, {"fulfilled_from_sixworks": true}, function(err){
+            var set = {
+                "$set":{
+                    "sixworks_request": req.body,
+                    "shopify_fulfill_response": req.shopify_body
+                }
+            };
+            db.orders.update({"_id":req.doc._id}, set, function(err){
                 if(err) return next(err);
                 return next();
             });
