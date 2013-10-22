@@ -6,7 +6,7 @@ module.exports = function(db){
         db.orders.findOne({"order.token": id}, function(err, order){
             if(err) return next(err);
             if(typeof order == "undefined") return next(new Error("no order with hash "+id));
-            req.doc = order;
+            req.order = order;
             return next();
         })
     }

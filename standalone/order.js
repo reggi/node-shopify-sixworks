@@ -62,6 +62,25 @@ module.exports = function(num){
           "variant_inventory_management": "",
           "properties": [],
           "product_exists": true
+        },
+        {
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "grams": 290,
+          "id": 331077208,
+          "price": "36.00",
+          "product_id": 165641876,
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "PSTR-ORIG18-001",
+          "title": "Alive Poster",
+          "variant_id": 380870784,
+          "variant_title": "Alive Poster",
+          "vendor": "Andrew Martis",
+          "name": "Alive Poster - Alive Poster",
+          "variant_inventory_management": "",
+          "properties": [],
+          "product_exists": true
         }
       ],
       "shipping_lines": [

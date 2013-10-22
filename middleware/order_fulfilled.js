@@ -16,11 +16,23 @@ module.exports = function(config, db, shopify, sixworks){
         function(req, res, next){
             shopify.request({
                 "method":"POST",
-                "path":"/admin/orders/"+"178606991"+"/fulfillments.json",
+                "path":"/admin/orders/"+req.order.created.order.id+"/fulfillments.json",
                 "body":{
                     "fulfillment": {
                         "tracking_number": null,
-                        "notify_customer": true
+                        "notify_customer": true,
+                        "line_items": function(){
+                            var line_items = req.order.created.order.line_items;
+                            var sixworks_line_items = _.filter(line_items, function(line_item){
+                                if(line_item.fulfillment_service.toLowerCase() == "sixworks") return true;
+                            });
+                            var ids = _.map(sixworks_line_items, function(line_item){
+                                var id = {};
+                                id.id = line_item.id;
+                                return id;
+                            });
+                            return ids;
+                        }()
                     }
                 }
             },function(err, response, body, options){
@@ -32,11 +44,13 @@ module.exports = function(config, db, shopify, sixworks){
         function(req, res, next){
             var set = {
                 "$set":{
-                    "sixworks_request": req.body,
-                    "shopify_fulfill_response": req.shopify_body
+                    "fulfilled":{
+                        "sixworks_request": req.body,
+                        "shopify_response": req.shopify_body
+                    }
                 }
             };
-            db.orders.update({"_id":req.doc._id}, set, function(err){
+            db.orders.update({"_id":req.order._id}, set, function(err){
                 if(err) return next(err);
                 return next();
             });
@@ -47,7 +61,7 @@ module.exports = function(config, db, shopify, sixworks){
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": "success",
-                "timestamp": new Date(),
+                "date": new Date(),
             };
             return res.status(json.code).json(json);
         },
@@ -57,9 +71,9 @@ module.exports = function(config, db, shopify, sixworks){
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": (typeof err == "object") ? err.message : err,
-                "timestamp": new Date(),
+                "date": new Date(),
             };
-            db.orders.update({"_id":req.doc._id}, {"$push":{"logs": json}}, function(err){
+            db.orders.update({"_id":req.order._id}, {"$push":{"logs": json}}, function(err){
                 return res.status(json.code).json(json);
             });
         }

@@ -23,21 +23,21 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            db.orders.findOne({"order.id": req.order.id}, function(err, order){
+            // check if order has already been sent to sixworks
+            db.orders.findOne({"created.order.id": req.order.id}, function(err, order){
                 if(err) return next(err);
-                if(typeof order !== "undefined" && order.sent_to_sixworks) return next("this order has already been processed");
-                req.unique = "req_"+Math.random().toString(36).substring(7);
+                if(typeof order !== "undefined" && order.created.order.sixworks_response) return next(new Error("this order has already been processed"));
                 return next();
             });
         },
         function(req, res, next){
             db.orders.insert({
-                "identifier": _.clone(req.unique),
-                "order":  _.clone(req.order),
-                "headers": _.clone(req.headers),
-                "sent_to_sixworks": false,
-                "fulfilled_from_sixworks": false,
-                "log": [],
+                "created": {
+                    "headers": _.clone(req.headers),
+                    "order":  _.clone(req.order),
+                    "sixworks_response": false,
+                    "date": new Date()
+                }
             }, function(err){
                 if(err) return next(err);
                 return next();
@@ -55,7 +55,7 @@ module.exports = function(config, db, shopify, sixworks){
             shopify.request("/orders/"+req.order.id, function(err, response, body, options){
                 if(err) return next(err);
                 return next();
-            });
+            })
         },
         function(req, res, next){
             //country
@@ -64,29 +64,27 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            //product
-            var sixworks_line_items = [];
-            _.each(req.order.line_items, function(line_item){
-                if(line_item.fulfillment_service.toLowerCase() == "sixworks") sixworks_line_items.push(line_item);
+            // product
+            var sixworks_line_items = _.filter(req.order.line_items, function(line_item){
+                if(line_item.fulfillment_service.toLowerCase() == "sixworks") return true;
             });
-            req.order.line_items = sixworks_line_items;
-            if(req.order.line_items.length == 0) return next(new Error("order does not have a product with sixworks as fulfillment_service"));
+            if(sixworks_line_items.length == 0) return next(new Error("order does not have a product with sixworks as fulfillment_service"));
             return next();
         },
         function(req, res, next){
             sixworks.request(req.order, function(err, body){
                 if(err) return next(err);
-                req.sixworks = body;
+                req.sixworks_response = body;
                 return next();
             });
         },
         function(req, res, next){
             var set = {
                 "$set":{
-                    "sent_to_sixworks": req.sixworks,
+                    "created.sixworks_response": req.sixworks_response,
                 }
             };
-            db.orders.update({"identifier": req.unique}, set, function(err){
+            db.orders.update({"created.order.id": req.order.id}, set, function(err){
                 if(err) return next(err);
                 return next();
             });
@@ -97,7 +95,7 @@ module.exports = function(config, db, shopify, sixworks){
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": "success",
-                "timestamp": new Date(),
+                "date": new Date(),
             };
             return res.status(json.code).json(json);
         },
@@ -107,9 +105,9 @@ module.exports = function(config, db, shopify, sixworks){
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": (typeof err == "object") ? err.message : err,
-                "timestamp": new Date(),
+                "date": new Date(),
             };
-            db.orders.update({"identifier": req.unique}, {"$push":{"logs": json}}, function(err){
+            db.orders.update({"created.order.id": req.order.id}, {"$push":{"logs": json}}, function(err){
                 return res.status(json.code).json(json);
             });
         }
