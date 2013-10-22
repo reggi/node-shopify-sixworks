@@ -73,9 +73,13 @@ module.exports = function(config, db, shopify, sixworks){
                 "message": (typeof err == "object") ? err.message : err,
                 "date": new Date(),
             };
-            db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": json}}, function(err){
+            if(dotty.exists(req, "order.created.order.id")){
+                db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": json}}, function(err){
+                    return res.status(json.code).json(json);
+                });
+            }else{
                 return res.status(json.code).json(json);
-            });
+            }
         }
     ];
 }
