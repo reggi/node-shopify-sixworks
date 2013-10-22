@@ -14,6 +14,13 @@ var sixworks = new Sixworks(config.sixworks);
 var mongolian = new Mongolian(config.mongodb);
 var db = {"orders": mongolian.collection("orders")};
 
+var establish_webhook = require("./lib/establish_webhook.js");
+var url = "http://shopify-sixworks.herokuapp.com/order_created";
+establish_webhook(shopify, url, function(err, deleted, webhook){
+    if(err) console.log("app : webhook establish failed");
+    console.log("app : webhook establish success");
+});
+
 app.set('port', process.env.PORT || 3000);
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

@@ -13,7 +13,8 @@
     "mongolian": "~0.1.18",
     "underscore": "~1.5.2",
     "moment": "~2.3.1",
-    "request": "~2.27.0"
+    "request": "~2.27.0",
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "optimist": "~0.6.0",
