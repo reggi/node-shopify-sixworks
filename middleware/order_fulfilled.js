@@ -50,7 +50,7 @@ module.exports = function(config, db, shopify, sixworks){
                     }
                 }
             };
-            db.orders.update({"_id":req.order._id}, set, function(err){
+            db.orders.update({"created.order.id": req.order.created.order.id}, set, function(err){
                 if(err) return next(err);
                 return next();
             });
@@ -73,7 +73,7 @@ module.exports = function(config, db, shopify, sixworks){
                 "message": (typeof err == "object") ? err.message : err,
                 "date": new Date(),
             };
-            db.orders.update({"_id":req.order._id}, {"$push":{"logs": json}}, function(err){
+            db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": json}}, function(err){
                 return res.status(json.code).json(json);
             });
         }

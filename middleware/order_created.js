@@ -19,10 +19,6 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            if(config.order_email_lock && req.order.email !== config.order_email_lock) return next(new Error("order email lock specified and not match"));
-            return next();
-        },
-        function(req, res, next){
             // check if order has already been sent to sixworks
             db.orders.findOne({"created.order.id": req.order.id}, function(err, order){
                 if(err) return next(err);
@@ -100,6 +96,7 @@ module.exports = function(config, db, shopify, sixworks){
             return res.status(json.code).json(json);
         },
         function(err, req, res, next){
+            console.log(err.stack);
             var json = {
                 "code": 200,
                 "method": req.method,
@@ -112,9 +109,17 @@ module.exports = function(config, db, shopify, sixworks){
                     return res.status(json.code).json(json);
                 });                
             }else{
-                console.log(err.stack);
                 return res.status(json.code).json(json);
             }
         }
     ];
 };
+
+/*
+
+function(req, res, next){
+    if(config.order_email_lock && req.order.email !== config.order_email_lock) return next(new Error("order email lock specified and not match"));
+    return next();
+},
+
+*/
