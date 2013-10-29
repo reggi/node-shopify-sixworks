@@ -7,10 +7,6 @@ module.exports = function(config, db, shopify, sixworks){
             if(req.method !== "POST") return next(new Error("http method needs to be POST"));
             if(!dotty.exists(req, "body.client_ref")) return next(new Error("no client_ref"));
             if(!dotty.exists(req, "body.date_despatched")) return next(new Error("no date_despatched"));
-            if(!dotty.exists(req, "body.client_area_link")) return next(new Error("no client_area_link"));
-            if(!dotty.exists(req, "body.postage_method")) return next(new Error("no postage_method"));
-            if(!dotty.exists(req, "body.boxed_weight")) return next(new Error("no boxed_weight"));
-            if(!dotty.exists(req, "body.postage_cost")) return next(new Error("no postage_cost"));
             return next();
         },
         function(req, res, next){

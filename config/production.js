@@ -1,8 +1,8 @@
 module.exports = {
-    "enabled": false,
-    "order_email_lock" false,
+    "enabled": true,
+    "order_email_lock": false,
     "mongodb": process.env.MONGOHQ_URL,
-    "domain": "sr.getsimpleapps.com",
+    "domain": "sw.getsimpleapps.com",
     "shopify": {
         "apikey": process.env.SHOPIFY_API_KEY,
         "password": process.env.SHOPIFY_PASSWORD,
@@ -12,6 +12,6 @@ module.exports = {
     "sixworks": {
         "url":process.env.SIXWORKS_URL,
         "key":process.env.SIXWORKS_KEY,
-        "webhook_domain": process.env.SIXWORKS_WEBHOOK_URL
+        "webhook_url": process.env.SIXWORKS_WEBHOOK_URL
     }
 }
