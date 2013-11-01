@@ -17,7 +17,7 @@ module.exports = function(config, db, shopify, sixworks){
             db.orders.findOne({"created.order.id": req.body.id}, function(err, order){
                 if(err) return next(err);
                 if(typeof order !== "undefined" && order.created.order.sixworks_response) return next(new Error("this order has already been processed"));
-                req.exists = (typeof order == "undefined") false : true;
+                req.exists = (typeof order == "undefined") ? false : true;
                 return next();
             });
         },

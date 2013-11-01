@@ -40,6 +40,6 @@ async.waterfall([
         });
     }
 ], function(err, results){
-    if(err) throw err;
+    //if(err) throw err;
     console.log(results);
 })
