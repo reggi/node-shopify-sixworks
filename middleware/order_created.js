@@ -40,11 +40,17 @@ module.exports = function(config, db, shopify, sixworks){
             });
         },
         function(req, res, next){
-            var valid = shopify.webhook.verify_headers(req,{
-                "topic":"orders/create",
-                "header":"x-shopify-order-id"
-            });
-            if(!valid) return next("shopify webhook headers failed verification");
+            if(!dotty.exists(req, "headers.x-shopify-topic")) return next(new Error("no header x-shopify-topic"));
+            if(!dotty.exists(req, "headers.x-shopify-test")) return next(new Error("no header x-shopify-test"));
+            if(!dotty.exists(req, "headers.x-shopify-shop-domain")) return next(new Error("no header x-shopify-shop-domain"));
+            if(!dotty.exists(req, "headers.x-shopify-order-id")) return next(new Error("no header x-shopify-order-id"));
+            if(!dotty.exists(req, "headers.x-shopify-hmac-sha256")) return next(new Error("no header x-shopify-hmac-sha256"));
+            if(!dotty.exists(req, "headers.user-agent")) return next(new Error("no header user-agent"));
+            if(req.headers["x-shopify-topic"] !== "orders/create") return next(new Error("webhook isn't orders/create"));
+            if(req.headers["x-shopify-test"] == "true") return next(new Error("shopify test header is true"));
+            if(req.headers["x-shopify-shop-domain"] !== config.shopify.hostname) return next(new Error("shopify domain header not valid"));
+            if(req.headers["user-agent"] !== "Ruby") return next(new Error("user agent isn't ruby"));
+            if(shopify.webhook.hmac(req.body) !== req.headers['x-shopify-hmac-sha256']) return next(new Error("failed verify hmac"));
             return next();
         },
         function(req, res, next){
@@ -114,12 +120,3 @@ module.exports = function(config, db, shopify, sixworks){
         }
     ];
 };
-
-/*
-
-function(req, res, next){
-    if(config.order_email_lock && req.order.email !== config.order_email_lock) return next(new Error("order email lock specified and not match"));
-    return next();
-},
-
-*/
