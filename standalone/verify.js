@@ -32,8 +32,8 @@ async.waterfall([
             if(req.headers["x-shopify-test"] == "true") return next(null, new Error("shopify test header is true"));
             if(req.headers["x-shopify-shop-domain"] !== config.shopify.hostname) return next(null, new Error("shopify domain header not valid"));
             if(req.headers["user-agent"] !== "Ruby") return next(null, new Error("user agent isn't ruby"));
-            if(shopify.webhook.hmac(req.body) !== req.headers['x-shopify-hmac-sha256']) return next(null, new Error("failed verify hmac"));
-            return next(null, "win");
+            if(shopify.webhook.hmac(req.body) !== req.headers['x-shopify-hmac-sha256']) return next(null, {"fail": req.order});
+            return next(null, {"win": req.order});
         },function(err, results){
             if(err) return callback(err);
             return callback(null, results);

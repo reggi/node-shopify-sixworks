@@ -5,32 +5,29 @@ var countries = require("./countries.js");
 module.exports = function(config, db, shopify, sixworks){
     return [
         function(req, res, next){
+            // preliminary checks
             if(!config.enabled) next(new Error("app is not enabled in settings"));
-            return next();
-        },
-        function(req, res, next){
             if(req.method !== "POST") return next(new Error("http method needs to be POST"));
-            return next();
-        },
-        function(req, res, next){
             if(!dotty.exists(req,"body")) return next(new Error("no body"));
             if(!dotty.exists(req,"body.id")) return next(new Error("no body id"));
-            req.order = req.body;
             return next();
         },
         function(req, res, next){
-            // check if order has already been sent to sixworks
-            db.orders.findOne({"created.order.id": req.order.id}, function(err, order){
+            // check if order exists
+            db.orders.findOne({"created.order.id": req.body.id}, function(err, order){
                 if(err) return next(err);
                 if(typeof order !== "undefined" && order.created.order.sixworks_response) return next(new Error("this order has already been processed"));
+                req.exists = (typeof order == "undefined") false : true;
                 return next();
             });
         },
         function(req, res, next){
+            // insert if order !exist
+            if(req.exists) return next();
             db.orders.insert({
                 "created": {
                     "headers": _.clone(req.headers),
-                    "order":  _.clone(req.order),
+                    "order":  _.clone(req.body),
                     "sixworks_response": false,
                     "date": new Date()
                 }
@@ -40,6 +37,7 @@ module.exports = function(config, db, shopify, sixworks){
             });
         },
         function(req, res, next){
+            // prior checks
             if(!dotty.exists(req, "headers.x-shopify-topic")) return next(new Error("no header x-shopify-topic"));
             if(!dotty.exists(req, "headers.x-shopify-test")) return next(new Error("no header x-shopify-test"));
             if(!dotty.exists(req, "headers.x-shopify-shop-domain")) return next(new Error("no header x-shopify-shop-domain"));
@@ -54,39 +52,37 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            shopify.request("/orders/"+req.order.id, function(err, response, body, options){
+            // check if order even exists in shop
+            shopify.request("/orders/"+req.body.id, function(err, response, body, options){
                 if(err) return next(err);
                 return next();
             })
         },
         function(req, res, next){
-            //country
-            var is_european = _.contains(countries.codes, req.order.shipping_address.country_code);
+            // check country
+            var is_european = _.contains(countries.codes, req.body.shipping_address.country_code);
             if(!is_european) return next(new Error("country is not european"));
             return next();
         },
         function(req, res, next){
-            // product
-            var sixworks_line_items = _.filter(req.order.line_items, function(line_item){
+            // check products have sixworks as fulfilfillment service
+            var sixworks_line_items = _.filter(req.body.line_items, function(line_item){
                 if(line_item.fulfillment_service.toLowerCase() == "sixworks") return true;
             });
             if(sixworks_line_items.length == 0) return next(new Error("order does not have a product with sixworks as fulfillment_service"));
             return next();
         },
         function(req, res, next){
-            sixworks.request(req.order, function(err, body){
+            // create in sixworks
+            sixworks.request(req.body, function(err, body){
                 if(err) return next(err);
                 req.sixworks_response = body;
                 return next();
             });
         },
         function(req, res, next){
-            var set = {
-                "$set":{
-                    "created.sixworks_response": req.sixworks_response,
-                }
-            };
-            db.orders.update({"created.order.id": req.order.id}, set, function(err){
+            // update database with sixworks response
+            db.orders.update({"created.order.id": req.body.id}, {"$set":{"created.sixworks_response": req.sixworks_response}}, function(err){
                 if(err) return next(err);
                 return next();
             });
@@ -110,13 +106,10 @@ module.exports = function(config, db, shopify, sixworks){
                 "message": (typeof err == "object") ? err.message : err,
                 "date": new Date(),
             };
-            if(dotty.exists(req,"order.id")){
-                db.orders.update({"created.order.id": req.order.id}, {"$push":{"logs": json}}, function(err){
-                    return res.status(json.code).json(json);
-                });                
-            }else{
+            if(!dotty.exists(req,"order.id")) return res.status(json.code).json(json);
+            db.orders.update({"created.order.id": req.body.id}, {"$push":{"logs": json}}, function(err){
                 return res.status(json.code).json(json);
-            }
+            });
         }
     ];
 };
