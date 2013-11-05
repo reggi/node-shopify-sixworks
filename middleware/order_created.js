@@ -48,7 +48,7 @@ module.exports = function(config, db, shopify, sixworks){
             if(req.headers["x-shopify-test"] == "true") return next(new Error("shopify test header is true"));
             if(req.headers["x-shopify-shop-domain"] !== config.shopify.hostname) return next(new Error("shopify domain header not valid"));
             if(req.headers["user-agent"] !== "Ruby") return next(new Error("user agent isn't ruby"));
-            if(shopify.webhook.hmac(req.body) !== req.headers['x-shopify-hmac-sha256']) return next(new Error("failed verify hmac"));
+            //if(shopify.webhook.hmac(req.body) !== req.headers['x-shopify-hmac-sha256']) return next(new Error("failed verify hmac"));
             return next();
         },
         function(req, res, next){
@@ -88,27 +88,23 @@ module.exports = function(config, db, shopify, sixworks){
             });
         },
         function(req, res, next){
-            var json = {
-                "code": 200,
-                "method": req.method,
-                "url": req.protocol + "://" + req.get('host') + req.url,
+            var log = {
                 "message": "success",
-                "date": new Date(),
+                "date": new Date()
             };
-            return res.status(json.code).json(json);
+            db.orders.update({"created.order.id": req.body.id}, {"$push":{"logs": log}}, function(err){
+                if(err) return res.status(200).json({"success":false});
+                return res.status(200).json({"success":true});
+            });
         },
         function(err, req, res, next){
-            console.log(err.stack);
-            var json = {
-                "code": 200,
-                "method": req.method,
-                "url": req.protocol + "://" + req.get('host') + req.url,
+            var log = {
                 "message": (typeof err == "object") ? err.message : err,
-                "date": new Date(),
+                "date": new Date()
             };
-            if(!dotty.exists(req,"order.id")) return res.status(json.code).json(json);
-            db.orders.update({"created.order.id": req.body.id}, {"$push":{"logs": json}}, function(err){
-                return res.status(json.code).json(json);
+            if(!dotty.exists(req,"body.id")) return res.status(200).json({"success":false});
+            db.orders.update({"created.order.id": req.body.id}, {"$push":{"logs": log}}, function(err){
+                return res.status(200).json({"success":false});
             });
         }
     ];
