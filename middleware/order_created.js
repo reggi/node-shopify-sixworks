@@ -59,17 +59,17 @@ module.exports = function(config, db, shopify, sixworks){
             })
         },
         function(req, res, next){
-            // check country
-            var is_european = _.contains(countries.codes, req.body.shipping_address.country_code);
-            if(!is_european) return next(new Error("country is not european"));
-            return next();
-        },
-        function(req, res, next){
             // check products have sixworks as fulfilfillment service
             var sixworks_line_items = _.filter(req.body.line_items, function(line_item){
                 if(line_item.fulfillment_service.toLowerCase() == "sixworks") return true;
             });
             if(sixworks_line_items.length == 0) return next(new Error("order does not have a product with sixworks as fulfillment_service"));
+            return next();
+        },
+        function(req, res, next){
+            // check country
+            var is_european = _.contains(countries.codes, req.body.shipping_address.country_code);
+            if(!is_european) return next(new Error("country is not european"));
             return next();
         },
         function(req, res, next){
