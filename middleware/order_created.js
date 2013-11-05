@@ -67,10 +67,13 @@ module.exports = function(config, db, shopify, sixworks){
             return next();
         },
         function(req, res, next){
-            // check country
+            // do not check country
+            return next();
+            /*
             var is_european = _.contains(countries.codes, req.body.shipping_address.country_code);
             if(!is_european) return next(new Error("country is not european"));
             return next();
+            */
         },
         function(req, res, next){
             // create in sixworks
