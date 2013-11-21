@@ -62,7 +62,7 @@ module.exports = function(config, db, shopify, sixworks){
             var json = {
                 "success": true
             };
-            return res.status(json.code).json(json);
+            return res.status(200).json(json);
         },
         function(err, req, res, next){
             var log = {
@@ -77,10 +77,10 @@ module.exports = function(config, db, shopify, sixworks){
             };
             if(dotty.exists(req, "order.created.order.id")){
                 db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": log}}, function(err){
-                    return res.status(json.code).json(json);
+                    return res.status(200).json(json);
                 });
             }else{
-                return res.status(json.code).json(json);
+                return res.status(200).json(json);
             }
         }
     ];
