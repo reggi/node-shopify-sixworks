@@ -52,25 +52,31 @@ module.exports = function(config, db, shopify, sixworks){
             });
         },
         function(req, res, next){
-            var json = {
+            /*
                 "code": 200,
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": "success",
                 "date": new Date(),
+            */
+            var json = {
+                "success": true
             };
             return res.status(json.code).json(json);
         },
         function(err, req, res, next){
-            var json = {
+            var log = {
                 "code": 200,
                 "method": req.method,
                 "url": req.protocol + "://" + req.get('host') + req.url,
                 "message": (typeof err == "object") ? err.message : err,
                 "date": new Date(),
+            }
+            var json = {
+                "success": false
             };
             if(dotty.exists(req, "order.created.order.id")){
-                db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": json}}, function(err){
+                db.orders.update({"created.order.id": req.order.created.order.id}, {"$push":{"logs": log}}, function(err){
                     return res.status(json.code).json(json);
                 });
             }else{
