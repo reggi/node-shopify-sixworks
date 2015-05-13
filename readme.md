@@ -73,6 +73,10 @@ git clone git@github.com:reggi/node-shopify-sixworks.git
 cd node-shopify-sixworks
 npm install
 npm run local
+heroku create node-shopify-sixworks
+heroku config:push ## assuming you have .env setup
+git push heroku master
+heroku logs --tail
 ```
 
 ## Query The Last 100 Orders
