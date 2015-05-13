@@ -1,5 +1,10 @@
 # Node Shopify Sixworks
 
+This app does two things:
+
+* listens to Shopify for created orders and create them to Sixworks
+* listens to Sixworks for fulfilled orders and fulfill them them in Shopify
+
 ## Summary
 
 This app bridges the connection between Shopify and Sixworks.
