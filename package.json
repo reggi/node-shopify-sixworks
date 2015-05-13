@@ -1,9 +1,10 @@
 {
-  "name": "application-name",
+  "name": "node-shopify-sixworks",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "local": "foreman start web"
   },
   "dependencies": {
     "async": "~0.2.9",
