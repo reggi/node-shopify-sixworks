@@ -30,7 +30,7 @@ app.use(express.errorHandler());
 
 app.param("hash", middleware.hash_param(db));
 
-app.all("/", function(req, res){res.send("shopify-sixworks");});
+app.all("/", function(req, res){res.send("OK Running shopify-sixworks");});
 app.all('/order_created', middleware.order_created(config, db, shopify, sixworks));
 app.all('/order_fulfilled/:hash', middleware.order_fulfilled(config, db, shopify, sixworks));
 
