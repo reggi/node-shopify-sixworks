@@ -1,0 +1,4 @@
+.env
+.git.bfg-report
+node_modules
+replace.txt

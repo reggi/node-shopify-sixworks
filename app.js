@@ -4,9 +4,9 @@ var express = require('express')
   , config = require("config")
   , Shopify = require("shopify-api")
   , Mongolian = require("mongolian")
-  , Sixworks = require("sixworks")
+  , Sixworks = require("node-sixworks-api")
   , middleware = require("./middleware");
-  
+
 var app = express();
 
 var shopify = new Shopify(config.shopify);
