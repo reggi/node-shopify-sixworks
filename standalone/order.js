@@ -10,7 +10,7 @@ module.exports = function(num){
       "confirmed": true,
       "created_at": "2013-10-21T18:18:12-04:00",
       "currency": "USD",
-      "email": process.env.ORDER_EMAIL_LOCK,
+      "email": "thomas@holstee.com",
       "financial_status": "authorized",
       "fulfillment_status": null,
       "gateway": "bogus",
