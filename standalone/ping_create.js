@@ -4,7 +4,6 @@ var Shopify = require("shopify-api");
 var rand = Math.floor((Math.random()*100000)+1);
 var order = require("./order.js")(rand).order;
 var shopify = Shopify(config.shopify);
-//var url = "http://shopify-sixworks.herokuapp.com";
 var url = "http://localhost:3000";
 var path = "/order_created";
 

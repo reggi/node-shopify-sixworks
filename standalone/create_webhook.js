@@ -3,7 +3,7 @@ var async = require("async");
 var config = require("config");
 var Shopify = require("shopify-api");
 var shopify = new Shopify(config.shopify);
-var url = "http://shopify-sixworks.herokuapp.com/order_created";
+var url = process.env.SIXWORKS_WEBHOOK_URL+"/order_created";
 
 //var url = "http://sr.getsimpleapps.com/webhook/shopify";
 //var url = "http://requestb.in/1l0sbge1";
@@ -28,7 +28,7 @@ async.waterfall([
     },
 ], function(err, webhook_found){
     console.log(webhook_found);
-});  
+});
 
 
 
